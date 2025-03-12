@@ -3,29 +3,29 @@ import generatekey from "../Config/TokenGenerate.js";
 
 const addUser = async (req, res) => {
   const { name, email, phone } = req.body;
+
+  // ✅ Validate required fields
+  if (!name || !email || !phone) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
   try {
-    if (!name || !email || !phone) {
-      return res.status(400).json({ message: "All fields are required" });
+    // ✅ Check if user already exists
+    const existingUser = await Customer.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists" });
     }
 
-    const older = await Customer.findOne({ email });
+    // ✅ Create new user
+    const user = await Customer.create({ name, email, phone });
 
-    if (older) {
-      return res.status(401).json({ message: "User already exists" });
-    }
+    // ✅ Generate authentication token
+    const token = generatekey({ email: user.email });
 
-    const user = await Customer.create({
-      name,
-      email,
-      phone,
-    });
-    await user.save();
-
-    const generatekeytoken = generatekey({ email: user.email });
-
-    return res.status(200).json({ message: "User added successfully", token: generatekeytoken });
+    return res.status(201).json({ message: "User added successfully", token });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Error adding user:", error);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
 
