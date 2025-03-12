@@ -28,7 +28,7 @@ const Addcardetails = (req, res) => {
   }
 };
 
-const getcardetails = async (req, res) => {
+const getcartdetails = async (req, res) => {
   const { topic } = req.body;
   try {
     if (topic == null) {
@@ -45,7 +45,7 @@ const getcardetails = async (req, res) => {
   }
 };
 
-const getAllCarDetails = async (req, res) => {
+const getAllCartetails = async (req, res) => {
     try {
         const carDetails = await CartDetails.find({});
         return res.status(200).json({ message: "Car details fetched successfully", carDetails });
@@ -55,4 +55,4 @@ const getAllCarDetails = async (req, res) => {
 };
 
 
-export { getcardetails, Addcardetails ,getAllCarDetails };
+export { getcartdetails, Addcartetails ,getAllCartDetails };

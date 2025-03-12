@@ -21,7 +21,7 @@ connectDB().then(() => console.log("✅ Database Connected Successfully")).catch
 // API Routes
 app.use("/api/user", UserAPI);
 app.use("/api/car", CarAPI);
-app.use("/api/order", OrderAPI);
+app.use("/api/orders", OrderAPI);
 
 // Default Route for Health Check
 app.get("/", (req, res) => {

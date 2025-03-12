@@ -3,39 +3,43 @@ import verifyalert from "../Config/EmailConfiguration.js";
 import Customer from "../Models/CustomerModel.js";
 
 const Saveorder = async (req, res) => {
-  const { customerEmail, cart_topic, date, selleremail } = req.body;
+  const { name, addressLine1, addressLine2, city, postalCode, phone } = req.body;
 
   try {
-    if (!customerEmail || !cart_topic || !date || !selleremail) {
-      return res.status(400).json({ message: "All fields are required" });
+    // Check if all required fields are provided
+    if (!name || !addressLine1 || !city || !postalCode || !phone) {
+      return res.status(400).json({ message: "All required fields must be provided" });
     }
 
-    const orderdetails = new OrderDetails({
-      customerEmail,
-      cart_topic,
-      date,
-      selleremail,
+    // Create new order entry
+    const orderDetails = new OrderDetails({
+      name,
+      addressLine1,
+      addressLine2,
+      city,
+      postalCode,
+      phone,
     });
 
-    // Save the order and wait for completion
-    await orderdetails.save();
+    // Save the order in the database
+    await orderDetails.save();
 
-  
-    const findCustomer = await Customer.findOne({ email: customerEmail });
+    // Find customer by contact number (or email if you prefer)
+    const findCustomer = await Customer.findOne({ phone });
 
     if (!findCustomer) {
       return res.status(404).json({ message: "Customer not found" });
     }
 
-   
+    // Send email notification to customer
     const sendEmail = await verifyalert(
-      selleremail,
+      findCustomer.email, // Use customer's email from the database
       findCustomer.name,
-      cart_topic
+      `Order for ${name} has been placed.`
     );
 
     if (sendEmail) {
-      return res.status(200).json({ message: "Ordered successfully" });
+      return res.status(200).json({ message: "Order placed successfully" });
     }
 
     return res.status(500).json({ message: "Error sending email" });

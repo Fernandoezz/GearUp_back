@@ -3,6 +3,6 @@ import Saveorder from "../Controllers/OrderController.js";
 
 const router = express.Router();
 
-router.post("/saveorder", Saveorder);
+router.post("/saveorders", Saveorder);
 
 export default router;

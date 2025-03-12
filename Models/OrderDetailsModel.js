@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 
 const OrderDetailsSchema = new mongoose.Schema(
   {
-    customerEmail: { type: String, required: true },
-    cart_topic: { type: String, required: true },
-    date: { type: String, required: true },
-    selleremail: { type: String, required: true },
+    name: { type: String, required: true },
+    addressLine1: { type: String, required: true },
+    addressLine2: { type: String }, // Optional field
+    city: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    phone: { type: String, required: true },
   },
   { timestamps: true }
 );
